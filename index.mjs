@@ -47,7 +47,6 @@ app.get("/student", (req, res) => {
   res.send(filterStudent);
 });
 
-
 // create employee add and get request in express js 
 const employeeList = [];
 app.post("/employee", (req, res) => {
