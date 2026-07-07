@@ -40,13 +40,26 @@ app.get("/student", (req, res) => {
       designation: "Graphic Designer",
     },
   ];
+  const filterStudent = students.filter((item) =>
+    item.name.toLowerCase().includes(req?.query.name.toLowerCase()),
+  );
 
-  // const filterStudent = students.filter((item) =>
-  //   item.name.toLowerCase().includes(req?.query.name.toLowerCase()),
-  // );
+  res.send(filterStudent);
+});
 
-  // res.send(filterStudent);
-  res.send(students);
+
+// create employee add and get request in express js 
+const employeeList = [];
+app.post("/employee", (req, res) => {
+  employeeList.push(req.body);
+
+  res.send({
+    message: "employee added successfully",
+  });
+});
+
+app.get("/employees", (req, res) => {
+  res.send(employeeList);
 });
 
 app.listen(port, () => {
