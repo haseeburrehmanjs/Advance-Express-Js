@@ -175,32 +175,32 @@
 //   console.log(`Example app listening on port ${port}`);
 // });
 
-import express from "express";
-const app = express();
-app.use(express.json()); // body parser
-const port = 3000;
+// import express from "express";
+// const app = express();
+// app.use(express.json()); // body parser
+// const port = 3000;
 
-// create supplier api
+// // create supplier api
 
-const supplierList = [];
-app.post("/api/v1/supplier", (req, res) => {
-  supplierList.push(req.body);
+// const supplierList = [];
+// app.post("/api/v1/supplier", (req, res) => {
+//   supplierList.push(req.body);
 
-  res.send({
-    message: "supplier created successfully",
-    data: {
-      name: req.body?.name,
-      email: req.body?.email,
-      age: req.body?.age,
-      phone: req.body?.phone,
-    },
-  });
-});
+//   res.send({
+//     message: "supplier created successfully",
+//     data: {
+//       name: req.body?.name,
+//       email: req.body?.email,
+//       age: req.body?.age,
+//       phone: req.body?.phone,
+//     },
+//   });
+// });
 
-app.get("/api/v1/suppliers", (req, res) => {
-  res.send(supplierList);
-});
+// app.get("/api/v1/suppliers", (req, res) => {
+//   res.send(supplierList);
+// });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
