@@ -96,24 +96,58 @@
 //   console.log(`Example app listening on port ${port}`);
 // });
 
-import express from "express";
-const app = express();
-app.use(express.json());
-const port = 3000;
+// import express from "express";
+// const app = express();
+// app.use(express.json());
+// // app.use(express.static("public"));
+// const port = 3000;
 
-const employeeList = [];
-app.post("/employee", (req, res) => {
-  employeeList.push(req.body);
+// const employeeList = [];
+// app.post("/employee", (req, res) => {
+//   employeeList.push(req.body);
 
-  res.send({
-    message: "employee added successfully",
-  });
-});
+//   res.send({
+//     message: "employee added successfully",
+//   });
+// });
 
-app.get("/employees", (req, res) => {
-  res.send(employeeList);
-});
+// app.get("/employees", (req, res) => {
+//   res.send(employeeList);
+// });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+// app.post("/weather", (req, res) => {
+//   console.log(req.body);
+
+//   res.send({
+//     message: "weather is normal",
+//     temp: 32,
+//     high: 60,
+//     low: 50,
+//   });
+// });
+
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
+
+// import express from "express";
+// const app = express();
+// app.use(express.json());
+// const port = 3000;
+
+// app.post("/supplier", (req, res) => {
+//   console.log(req.body);
+
+//   res.send({
+//     message: "Supplier created successfully",
+//     data: {
+//       name: req.body.name,
+//       age: req.body.age,
+//       email: req.body.email,
+//     },
+//   });
+// });
+
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
