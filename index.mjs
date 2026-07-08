@@ -65,31 +65,53 @@
 //   console.log(`Example app listening on port ${port}`);
 // });
 
+// import express from "express";
+// const app = express();
+// app.use(express.json());
+// const port = 3000;
+
+// // create add student api
+// const studentList = [];
+
+// app.post("/student", (req, res) => {
+//   studentList.push(req.body);
+
+//   res.status(200).send({
+//     message: "student added successfully",
+//   });
+// });
+
+// // get all students api using local variable and find student using query
+// app.get("/students", (req, res) => {
+//   const name = req?.query.name;
+
+//   const filterStudent = studentList.filter((item) =>
+//     item.name.toLowerCase().includes(req?.query.name.toLowerCase()),
+//   );
+
+//   res.status(200).send(filterStudent);
+// });
+
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
+
 import express from "express";
 const app = express();
 app.use(express.json());
 const port = 3000;
 
-// create add student api
-const studentList = [];
+const employeeList = [];
+app.post("/employee", (req, res) => {
+  employeeList.push(req.body);
 
-app.post("/student", (req, res) => {
-  studentList.push(req.body);
-
-  res.status(200).send({
-    message: "student added successfully",
+  res.send({
+    message: "employee added successfully",
   });
 });
 
-// get all students api using local variable and find student using query
-app.get("/students", (req, res) => {
-  const name = req?.query.name;
-
-  const filterStudent = studentList.filter((item) =>
-    item.name.toLowerCase().includes(req?.query.name.toLowerCase()),
-  );
-
-  res.status(200).send(filterStudent);
+app.get("/employees", (req, res) => {
+  res.send(employeeList);
 });
 
 app.listen(port, () => {
