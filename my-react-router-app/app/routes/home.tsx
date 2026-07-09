@@ -138,7 +138,7 @@ export function meta({ }: Route.MetaArgs) {
 // fetch supplier list from my own server
 export const loader = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/v1/suppliers')
+    const response = await fetch('http://localhost:3001/api/v1/supplier')
     const supplierList = await response.json();
     return {
       suppliers: supplierList,
@@ -159,7 +159,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const supplierData = Object.fromEntries(formData.entries());
 
   try {
-    const response = fetch('http://localhost:3000/api/v1/supplier', {
+    const response = fetch('http://localhost:3001/api/v1/supplier', {
       method: 'post',
       headers: {
         'content-type': 'application/json'
@@ -242,10 +242,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               <tbody className="divide-y divide-gray-100 text-gray-600 text-sm">
                 {suppliersList?.map((supplier, index) => (
                   <tr key={index} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 font-medium text-gray-900">{supplier.name}</td>
-                    <td className="px-6 py-4">{supplier.email}</td>
-                    <td className="px-6 py-4">{supplier.phone}</td>
-                    <td className="px-6 py-4">{supplier.age}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{supplier?.name}</td>
+                    <td className="px-6 py-4">{supplier?.email}</td>
+                    <td className="px-6 py-4">{supplier?.phone}</td>
+                    <td className="px-6 py-4">{supplier?.age}</td>
                   </tr>
                 ))}
               </tbody>

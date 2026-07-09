@@ -3,13 +3,21 @@ import express from "express";
 const supplierRouter = express.Router();
 
 // supplier created api
+const SupplierList = [];
 supplierRouter.post("/", (req, res) => {
-  res.send("supplier create successfully");
+  SupplierList.push(req.body);
+  console.log(req.body);
+  
+
+  res.send({
+    message: "supplier created successfully",
+    data: req.body,
+  });
 });
 
 // supplier all api
 supplierRouter.get("/", (req, res) => {
-  res.send("here is all supplier list");
+  res.send(SupplierList);
 });
 
 // supplier updated api
