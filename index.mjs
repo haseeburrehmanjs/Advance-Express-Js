@@ -204,3 +204,29 @@
 // app.listen(port, () => {
 //   console.log(`Example app listening on port ${port}`);
 // });
+
+import express from "express";
+import cors from "cors";
+const app = express();
+app.use(cors());
+app.use(express.json()); // body parser
+const port = 3000;
+
+// create supplier api
+const supplierList = [];
+app.post("/api/v1/supplier", (req, res) => {
+  supplierList.push(req.body);
+
+  res.send({
+    message: "supplier created successfully",
+  });
+});
+
+// get all suppliers
+app.get("/api/v1/suppliers", (req, res) => {
+  res.send(supplierList);
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
