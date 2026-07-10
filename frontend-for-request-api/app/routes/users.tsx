@@ -1,6 +1,7 @@
 import { PencilIcon, TrashIcon, PlusIcon } from 'lucide-react'; // Optional: For icons
-import type { Route } from '../+types/root';
-import { Form } from 'react-router';
+import { Form, useActionData, useNavigation } from 'react-router';
+import type { Route } from './+types/users';
+import { useEffect, useRef } from 'react';
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -9,15 +10,26 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
+export const loader = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/v1/user')
+    const userList = await response.json()
+    return {
+      users: userList.data
+    }
+  } catch (error) {
+    console.log('server error', error);
+  }
+}
+
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
-  const userDetail = Object.entries(formData.entries());
-
+  const userDetail = Object.fromEntries(formData.entries());
   try {
     const response = await fetch('http://localhost:3000/api/v1/user', {
       method: 'post',
       headers: {
-        'content-type': "application/json",
+        'content-type': 'application/json'
       },
       body: JSON.stringify(userDetail)
     })
@@ -30,7 +42,21 @@ export const action = async ({ request }: Route.ActionArgs) => {
   }
 }
 
-export default function Users() {
+export default function Users({ loaderData }: Route.ComponentProps) {
+  const { users } = loaderData;
+  const formRef = useRef<HTMLFormElement>(null);
+  const navigation = useNavigation();
+
+  const actionData = useActionData();
+
+  useEffect(() => {
+    if (navigation.state === 'idle' && actionData) {
+      formRef.current?.reset()
+      alert('user created successfully')
+    }
+  }, [navigation.state, actionData])
+
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-10">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -44,13 +70,14 @@ export default function Users() {
         {/* Form Section */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
           <h2 className="text-xl font-semibold mb-4 text-slate-200">Add New User</h2>
-          <Form method='post' className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <Form ref={formRef} method='post' className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
 
             {/* Name Input */}
             <div className="flex flex-col gap-y-2">
               <label htmlFor='name' className="text-xs font-medium text-slate-400 uppercase tracking-wider">Full Name</label>
               <input
                 type="text"
+                required
                 id='name'
                 name='name'
                 placeholder="John Doe"
@@ -62,6 +89,7 @@ export default function Users() {
             <div className="flex flex-col gap-y-2">
               <label htmlFor='email' className="text-xs font-medium text-slate-400 uppercase tracking-wider">Email Address</label>
               <input
+                required
                 id='email'
                 name='email'
                 type="email"
@@ -74,6 +102,7 @@ export default function Users() {
             <div className="flex flex-col gap-y-2">
               <label htmlFor='phone' className="text-xs font-medium text-slate-400 uppercase tracking-wider">Phone Number</label>
               <input
+                required
                 id='phone'
                 name='phone'
                 type="text"
@@ -105,6 +134,7 @@ export default function Users() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                  <th className="px-6 py-4">ID</th>
                   <th className="px-6 py-4">Name</th>
                   <th className="px-6 py-4">Email</th>
                   <th className="px-6 py-4">Phone</th>
@@ -112,38 +142,30 @@ export default function Users() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-sm text-slate-300">
-                {/* Dummy Row 1 */}
-                <tr className="hover:bg-slate-800/30 transition">
-                  <td className="px-6 py-4 font-medium text-white">Haseeb Ur Rehman</td>
-                  <td className="px-6 py-4 text-slate-400">haseeb@example.com</td>
-                  <td className="px-6 py-4 text-slate-400">+92 300 1234567</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2">
-                      <button className="p-2 text-slate-400 hover:text-violet-400 hover:bg-slate-800 rounded-lg transition" title="Edit">
-                        <PencilIcon className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition" title="Delete">
-                        <TrashIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                {/* Dummy Row 2 */}
-                <tr className="hover:bg-slate-800/30 transition">
-                  <td className="px-6 py-4 font-medium text-white">Ali Ahmed</td>
-                  <td className="px-6 py-4 text-slate-400">ali@example.com</td>
-                  <td className="px-6 py-4 text-slate-400">+92 321 7654321</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2">
-                      <button className="p-2 text-slate-400 hover:text-violet-400 hover:bg-slate-800 rounded-lg transition" title="Edit">
-                        <PencilIcon className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition" title="Delete">
-                        <TrashIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                {users.length === 0 ? (
+                  <td colSpan={5} className='p-10 text-center'>No User Data Exists.</td>
+                ) : (
+                  <>
+                    {users.map((item, index) => (
+                      <tr key={index} className="hover:bg-slate-800/30 transition">
+                        <td className="px-6 py-4 font-medium text-white">{index + 1}</td>
+                        <td className="px-6 py-4 font-medium text-white">{item.name}</td>
+                        <td className="px-6 py-4 text-slate-400">{item.email}</td>
+                        <td className="px-6 py-4 text-slate-400">{item.phone}</td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            <button className="p-2 text-slate-400 hover:text-violet-400 hover:bg-slate-800 rounded-lg transition" title="Edit">
+                              <PencilIcon className="w-4 h-4" />
+                            </button>
+                            <button className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition" title="Delete">
+                              <TrashIcon className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
               </tbody>
             </table>
           </div>

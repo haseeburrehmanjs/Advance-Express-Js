@@ -1,16 +1,24 @@
 import express from "express";
+import { nanoid } from "nanoid";
 
 const userRouter = express.Router();
 
 // create user
 const userList = [];
-
 userRouter.post("/", (req, res) => {
-  userList.push(req.body);
+  const { name, email, phone } = req.body;
+  const NewUser = {
+    id: nanoid(),
+    name,
+    email,
+    phone,
+  };
+
+  userList.push(NewUser);
 
   res.send({
     message: "user created successfully",
-    data: req.body,
+    data: NewUser,
   });
 });
 
