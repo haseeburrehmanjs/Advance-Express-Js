@@ -261,7 +261,7 @@
 
 
 import { PencilIcon, TrashIcon, PlusIcon } from 'lucide-react'; // Optional: For icons
-import { Form, useActionData, useNavigation } from 'react-router';
+import { Form, useActionData, useFetcher, useNavigation } from 'react-router';
 import type { Route } from './+types/users';
 import { useEffect, useRef } from 'react';
 
@@ -285,6 +285,22 @@ export const loader = async () => {
 }
 
 export const action = async ({ request }: Route.ActionArgs) => {
+  // Agar fetcher ke zariye DELETE method aaya hai
+  if (request.method === "DELETE") {
+    const formData = await request.formData();
+    const userId = formData.get("userId");
+
+    try {
+      await fetch(`http://localhost:3000/api/v1/user/${userId}`, {
+        method: 'DELETE',
+      });
+      return { success: true };
+    } catch (error) {
+      console.log('Delete error', error);
+      return { success: false };
+    }
+  }
+
   const formData = await request.formData();
   const userDetail = Object.fromEntries(formData.entries());
   try {
@@ -307,6 +323,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 export default function Users({ loaderData }: Route.ComponentProps) {
   const { users } = loaderData;
   const formRef = useRef<HTMLFormElement>(null);
+  const fetcher = useFetcher();
   const navigation = useNavigation();
 
   const actionData = useActionData();
@@ -318,6 +335,20 @@ export default function Users({ loaderData }: Route.ComponentProps) {
     }
   }, [navigation.state, actionData])
 
+  const handleUserDelete = (userId: string) => {
+    if (!userId) {
+      alert("Invalid user id")
+    }
+    try {
+      alert('are you sure you want to delete')
+      fetcher.submit(
+        { userId },
+        { method: 'DELETE' })
+    } catch (error) {
+      console.log('server erro');
+
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-10">
@@ -400,6 +431,7 @@ export default function Users({ loaderData }: Route.ComponentProps) {
                   <th className="px-6 py-4">Name</th>
                   <th className="px-6 py-4">Email</th>
                   <th className="px-6 py-4">Phone</th>
+                  <th className="px-6 py-4">Created On</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -414,12 +446,17 @@ export default function Users({ loaderData }: Route.ComponentProps) {
                         <td className="px-6 py-4 font-medium text-white">{item.name}</td>
                         <td className="px-6 py-4 text-slate-400">{item.email}</td>
                         <td className="px-6 py-4 text-slate-400">{item.phone}</td>
+                        <td className="px-6 py-4 text-slate-400">{item.created_on}</td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2">
-                            <button className="p-2 text-slate-400 hover:text-violet-400 hover:bg-slate-800 rounded-lg transition" title="Edit">
+                            <button onClick={() => {
+
+                            }} className="p-2 text-slate-400 hover:text-violet-400 hover:bg-slate-800 rounded-lg transition" title="Edit">
                               <PencilIcon className="w-4 h-4" />
                             </button>
-                            <button className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition" title="Delete">
+                            <button
+                              onClick={() => handleUserDelete(item._id)}
+                              className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition" title="Delete">
                               <TrashIcon className="w-4 h-4" />
                             </button>
                           </div>
