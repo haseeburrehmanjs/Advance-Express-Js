@@ -1,6 +1,7 @@
 import express from "express";
 import { nanoid } from "nanoid";
 import { client } from "./mongodb.js";
+import { ObjectId } from "mongodb";
 
 const userRouter = express.Router();
 const myDB = client.db("userDatabase");
@@ -49,7 +50,9 @@ userRouter.get("/:id", async (req, res) => {
   try {
     const userId = req.params.id;
     console.log("Searching for user ID: ", userId);
-    const user = await myColl.find({ id: userId }).toArray();
+
+    const user = await myColl.find({ _id: new ObjectId(userId) }).toArray();
+
     res.status(200).send({
       success: "user found successfully",
       data: user,
